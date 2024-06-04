@@ -42,7 +42,7 @@ export class Bot {
         ['human', '{input}']
       ])
       const maxTokens = isNaN(Number(process.env.AZURE_OPENAI_API_MAX_TOKENS))
-        ? 32600
+        ? 4096
         : Number(process.env.AZURE_OPENAI_API_MAX_TOKENS)
       info(`maxTokens: ${maxTokens}`)
 
