@@ -41,6 +41,10 @@ export class Bot {
         new MessagesPlaceholder('history'),
         ['human', '{input}']
       ])
+      const maxTokens = isNaN(Number(process.env.AZURE_OPENAI_API_MAX_TOKENS))
+        ? 32600
+        : Number(process.env.AZURE_OPENAI_API_MAX_TOKENS)
+      info(`maxTokens: ${maxTokens}`)
 
       this.model = new ChatOpenAI({
         temperature: options.openaiModelTemperature,
@@ -51,7 +55,7 @@ export class Bot {
           process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
         timeout: this.options.openaiTimeoutMS,
         maxRetries: this.options.openaiRetries,
-        maxTokens: 4096
+        maxTokens
       })
       this.api = new ConversationChain({
         memory: new BufferMemory({returnMessages: true, memoryKey: 'history'}),
