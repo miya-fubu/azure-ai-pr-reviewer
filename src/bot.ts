@@ -50,7 +50,8 @@ export class Bot {
         azureOpenAIApiDeploymentName:
           process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
         timeout: this.options.openaiTimeoutMS,
-        maxRetries: this.options.openaiRetries
+        maxRetries: this.options.openaiRetries,
+        maxTokens: 4096
       })
       this.api = new ConversationChain({
         memory: new BufferMemory({returnMessages: true, memoryKey: 'history'}),
