@@ -11378,6 +11378,10 @@ class Bot {
                 new prompts/* MessagesPlaceholder */.ax('history'),
                 ['human', '{input}']
             ]);
+            const maxTokens = isNaN(Number(process.env.AZURE_OPENAI_API_MAX_TOKENS))
+                ? 32600
+                : Number(process.env.AZURE_OPENAI_API_MAX_TOKENS);
+            (0,core.info)(`maxTokens: ${maxTokens}`);
             this.model = new openai.ChatOpenAI({
                 temperature: options.openaiModelTemperature,
                 azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
@@ -11385,7 +11389,8 @@ class Bot {
                 azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_API_INSTANCE_NAME,
                 azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_API_DEPLOYMENT_NAME,
                 timeout: this.options.openaiTimeoutMS,
-                maxRetries: this.options.openaiRetries
+                maxRetries: this.options.openaiRetries,
+                maxTokens
             });
             this.api = new conversation_ConversationChain({
                 memory: new BufferMemory({ returnMessages: true, memoryKey: 'history' }),
@@ -11405,6 +11410,7 @@ class Bot {
             return res;
         }
         catch (e) {
+            (0,core.warning)(JSON.stringify(e));
             return res;
         }
     };
@@ -11423,6 +11429,7 @@ class Bot {
                 (0,core.info)(`response: ${response}, failed to send message to openai: ${e}`);
             }
             const end = Date.now();
+            (0,core.info)(`request: ${message}`);
             (0,core.info)(`response: ${JSON.stringify(response)}`);
             (0,core.info)(`openai sendMessage (including retries) response time: ${end - start} ms`);
         }

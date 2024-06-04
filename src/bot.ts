@@ -75,6 +75,7 @@ export class Bot {
       res = await this.chat_(message)
       return res
     } catch (e: unknown) {
+      warning(JSON.stringify(e))
       return res
     }
   }
@@ -95,6 +96,7 @@ export class Bot {
         info(`response: ${response}, failed to send message to openai: ${e}`)
       }
       const end = Date.now()
+      info(`request: ${message}`)
       info(`response: ${JSON.stringify(response)}`)
       info(
         `openai sendMessage (including retries) response time: ${
